@@ -1,0 +1,18 @@
+# Settings for running on a developer machine. This profile also turns off authentication.
+spring:
+  # During `./gradlew bootRun` the connection comes from compose.yaml and these values aren't used.
+  # They apply when the application is started some other way against a Postgres on port 5432.
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crm_demo_core_service_db
+    username: crm_demo_core_service_local
+    password: local
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9999/local-issuer   # required at startup, but unused with authentication off
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

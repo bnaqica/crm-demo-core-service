@@ -1,0 +1,42 @@
+# Defaults for every environment. Values come from environment variables so the
+# same image runs anywhere; the `local` profile fills them in for local development.
+server:
+  port: 8081
+
+spring:
+  application:
+    name: crm-demo-core-service
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate   # Flyway owns the schema
+    properties:
+      hibernate:
+        default_schema: crm_demo_core_service
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: crm_demo_core_service   # never the public schema
+    schemas: crm_demo_core_service,audit
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# API docs are only switched on by the `local` profile
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
