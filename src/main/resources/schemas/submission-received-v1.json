@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crm-demo.example/schemas/submission-received-v1.json",
+  "title": "SubmissionReceived v1",
+  "description": "Published by customer-portal-service to portal-intake (header type=SubmissionReceived) for each new submission and each correction.",
+  "type": "object",
+  "required": ["eventId", "schemaVersion", "occurredAt", "portalUserId", "email", "submissionId", "version", "type", "region", "documents"],
+  "properties": {
+    "eventId": {"$ref": "#/$defs/uuid"},
+    "schemaVersion": {"const": 1},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "portalUserId": {"$ref": "#/$defs/uuid"},
+    "email": {"type": "string", "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", "maxLength": 320},
+    "submissionId": {"$ref": "#/$defs/uuid"},
+    "version": {"type": "integer", "minimum": 1},
+    "type": {"type": "string", "minLength": 1, "maxLength": 100},
+    "region": {"type": "string", "minLength": 1, "maxLength": 100},
+    "documents": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["documentId", "storageKey", "contentType", "size", "sha256"],
+        "properties": {
+          "documentId": {"$ref": "#/$defs/uuid"},
+          "storageKey": {"type": "string", "minLength": 1, "maxLength": 1024},
+          "contentType": {"type": "string", "minLength": 1, "maxLength": 255},
+          "size": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "uuid": {"type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"}
+  }
+}

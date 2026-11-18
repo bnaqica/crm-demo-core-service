@@ -26,7 +26,50 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${JWT_ISSUER_URI}
+          issuer-uri: ${JWT_ISSUER_URI}   # the crm-internal realm; tokens must also be for audience crm-api
+      client:
+        # Client-credentials client for calls to the UMS (scopes ums:team-scope and ums:catalog)
+        registration:
+          core-service:
+            provider: crm-internal
+            client-id: core-service
+            client-secret: ${KEYCLOAK_CORE_SERVICE_SECRET}
+            authorization-grant-type: client_credentials
+          # Only for the UMS promote call (scope ums:promote)
+          crm-promoter:
+            provider: crm-internal
+            client-id: crm-promoter
+            client-secret: ${KEYCLOAK_CRM_PROMOTER_SECRET}
+            authorization-grant-type: client_credentials
+        provider:
+          crm-internal:
+            token-uri: ${KEYCLOAK_BASE_URL}/realms/crm-internal/protocol/openid-connect/token
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: crm-demo-core-service
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+
+crm:
+  ums:
+    base-url: ${UMS_BASE_URL}
+  scope-cache:
+    ttl: ${CRM_SCOPE_CACHE_TTL:5m}   # at most 5m
+  catalog:
+    retry-interval: ${CRM_CATALOG_RETRY_INTERVAL:30s}
+  outbox:
+    relay-interval: ${CRM_OUTBOX_RELAY_INTERVAL:1s}
+  routing:
+    default-team-id: ${CRM_DEFAULT_TEAM_ID}   # UMS team for submissions no routing rule matches
+  topics:
+    user-events: ums-user-events
+    audit-events: audit-events
+    portal-intake: portal-intake   # dead letters go to portal-intake-dlq
+    submission-status: submission-status
+  cors:
+    allowed-origins: ${CRM_CORS_ALLOWED_ORIGINS}   # comma-separated, e.g. https://crm.example.com
 
 management:
   endpoints:

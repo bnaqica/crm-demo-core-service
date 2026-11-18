@@ -21,8 +21,11 @@ TODO: what this service does.
 ./gradlew bootRun
 ```
 
-This uses the `local` profile, which turns off authentication. Swagger UI is at
-<http://localhost:8081/swagger-ui.html>.
+This uses the `local` profile. Requests don't need a token to get past the security filters, so Swagger UI is at
+<http://localhost:8081/swagger-ui.html>, but CRM endpoints still check permissions and the user's UMS status, so
+calls to them need a token from the local Keycloak (`crm-internal` realm, audience `crm-api`, for example signed in
+through the CRM UI). `compose.yaml` only starts PostgreSQL; the local profile also expects, from `local-docker` and the
+UMS repo, Kafka on `localhost:9092`, Keycloak on `localhost:8180` and the UMS on `localhost:8083`.
 
 ## Environment variables
 
@@ -33,7 +36,17 @@ Needed everywhere except the `local` profile.
 | `DB_URL` | JDBC URL of the database |
 | `DB_USERNAME` | Database user |
 | `DB_PASSWORD` | Database password |
-| `JWT_ISSUER_URI` | Issuer whose JWTs this service accepts |
+| `JWT_ISSUER_URI` | Issuer whose JWTs this service accepts: the `crm-internal` realm, e.g. `https://keycloak.example/realms/crm-internal` |
+| `KEYCLOAK_BASE_URL` | Keycloak address, for the client-credentials token endpoint |
+| `KEYCLOAK_CORE_SERVICE_SECRET` | Secret of the `core-service` client in `crm-internal` |
+| `KEYCLOAK_CRM_PROMOTER_SECRET` | Secret of the `crm-promoter` client in `crm-internal` (only for promoting portal users) |
+| `UMS_BASE_URL` | Address of the User Management Service |
+| `CRM_DEFAULT_TEAM_ID` | UMS team id that gets portal submissions no routing rule matches |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka brokers |
+| `CRM_CORS_ALLOWED_ORIGINS` | Comma-separated browser origins allowed to call the API (the CRM UI) |
+| `CRM_SCOPE_CACHE_TTL` | Optional; how long team scope is cached for reads (default and maximum `5m`) |
+| `CRM_CATALOG_RETRY_INTERVAL` | Optional; wait before retrying a failed catalog registration (default `30s`) |
+| `CRM_OUTBOX_RELAY_INTERVAL` | Optional; how often outbox events are published (default `1s`) |
 
 ## Test and format
 

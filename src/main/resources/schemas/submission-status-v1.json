@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crm-demo.example/schemas/submission-status-v1.json",
+  "title": "SubmissionAccepted / SubmissionRejected v1",
+  "description": "Published by core-service to submission-status. Carries no CRM data (no team, assignee or notes), hence no other properties.",
+  "type": "object",
+  "required": ["eventId", "schemaVersion", "occurredAt", "submissionId", "version", "portalUserId", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "eventId": {"$ref": "#/$defs/uuid"},
+    "schemaVersion": {"const": 1},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "submissionId": {"$ref": "#/$defs/uuid"},
+    "version": {"type": "integer", "minimum": 1},
+    "portalUserId": {"$ref": "#/$defs/uuid"},
+    "status": {"enum": ["ACCEPTED", "REJECTED"]},
+    "reason": {"type": "string", "minLength": 1, "maxLength": 500}
+  },
+  "if": {"properties": {"status": {"const": "REJECTED"}}},
+  "then": {"required": ["reason"]},
+  "else": {"not": {"required": ["reason"]}},
+  "$defs": {
+    "uuid": {"type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"}
+  }
+}

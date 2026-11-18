@@ -5,3 +5,21 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9999/test-issuer
+      client:
+        registration:
+          core-service:
+            client-secret: core-service-local-secret
+          crm-promoter:
+            client-secret: crm-promoter-local-secret
+        provider:
+          crm-internal:
+            token-uri: http://localhost:9999/token
+  kafka:
+    bootstrap-servers: localhost:9   # replaced by Testcontainers in integration tests; never contacted otherwise
+crm:
+  ums:
+    base-url: http://localhost:9999/ums
+  routing:
+    default-team-id: 00000000-0000-0000-0000-0000000000d0
+  cors:
+    allowed-origins: http://localhost:5173

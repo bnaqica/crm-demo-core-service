@@ -10,7 +10,25 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9999/local-issuer   # required at startup, but unused with authentication off
+          issuer-uri: http://localhost:8180/realms/crm-internal   # unused while the local profile turns authentication off
+      client:
+        registration:
+          core-service:
+            client-secret: core-service-local-secret
+          crm-promoter:
+            client-secret: crm-promoter-local-secret
+        provider:
+          crm-internal:
+            token-uri: http://localhost:8180/realms/crm-internal/protocol/openid-connect/token
+  kafka:
+    bootstrap-servers: localhost:9092
+crm:
+  ums:
+    base-url: http://localhost:8083
+  routing:
+    default-team-id: 00000000-0000-0000-0000-000000000000   # replace with a team created in the local UMS
+  cors:
+    allowed-origins: http://localhost:5173   # the CRM UI dev server
 springdoc:
   api-docs:
     enabled: true

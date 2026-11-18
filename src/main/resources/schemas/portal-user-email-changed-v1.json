@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crm-demo.example/schemas/portal-user-email-changed-v1.json",
+  "title": "PortalUserEmailChanged v1",
+  "description": "Published by customer-portal-service to portal-intake (header type=PortalUserEmailChanged) when a user's verified email changes.",
+  "type": "object",
+  "required": ["eventId", "schemaVersion", "occurredAt", "portalUserId", "email"],
+  "properties": {
+    "eventId": {"$ref": "#/$defs/uuid"},
+    "schemaVersion": {"const": 1},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "portalUserId": {"$ref": "#/$defs/uuid"},
+    "email": {"type": "string", "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", "maxLength": 320}
+  },
+  "$defs": {
+    "uuid": {"type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"}
+  }
+}

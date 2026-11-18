@@ -2,6 +2,8 @@ package com.bnaqica.crmdemocoreservice.config;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,24 @@ class SecurityConfigTests {
     @Test
     void acceptsRequestWithToken() throws Exception {
         mockMvc.perform(get("/anything").with(jwt())).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void crmUiOriginMayCallTheApi() throws Exception {
+        mockMvc.perform(options("/anything")
+                        .header("Origin", "http://localhost:5173")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Authorization,Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:5173"));
+    }
+
+    @Test
+    void otherOriginsAreRefused() throws Exception {
+        mockMvc.perform(options("/anything")
+                        .header("Origin", "http://evil.example")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isForbidden());
     }
 
     @Test

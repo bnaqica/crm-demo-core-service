@@ -18,11 +18,25 @@ The service SHALL accept only JWTs issued by the `crm-internal` realm with audie
 - **THEN** the response is 401
 
 ### Requirement: Permission per endpoint
-Every endpoint except the health check SHALL declare a required permission. A request SHALL succeed only if the token holds it; otherwise the response SHALL be 403.
+Every endpoint except the health check SHALL declare a required permission. A request SHALL succeed only if the token holds it; otherwise the response SHALL be 403. The one exception is `GET /me/capabilities`, which SHALL instead declare that it is open to any ACTIVE internal user; only allowlisted endpoints MAY use that declaration, and it SHALL NOT be registered in the catalog.
 
 #### Scenario: Missing permission
 - **WHEN** a user without `submissions:write` calls an endpoint declaring `submissions:write`
 - **THEN** the response is 403
+
+#### Scenario: Active user without permissions reads capabilities
+- **GIVEN** an ACTIVE internal user whose token holds no CRM permissions
+- **WHEN** they call `GET /me/capabilities`
+- **THEN** the response is 200
+
+#### Scenario: Disabled user reads capabilities
+- **GIVEN** a user disabled after their token was issued
+- **WHEN** they call `GET /me/capabilities`
+- **THEN** the response is 403
+
+#### Scenario: Any-active-user declaration outside the allowlist
+- **WHEN** a developer declares another endpoint open to any ACTIVE internal user and runs the build
+- **THEN** the build fails naming the endpoint
 
 ### Requirement: Undeclared endpoints fail the build
 The build SHALL fail if any controller endpoint lacks a permission declaration.
