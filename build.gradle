@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
     // Validates events against the JSON Schemas in src/main/resources/schemas; not in Spring Boot's BOM.
     // 3.x is the line built on Jackson 3.
-    implementation 'com.networknt:json-schema-validator:3.0.1'
+    implementation 'com.networknt:json-schema-validator:3.0.9'
     // springdoc isn't in Spring Boot's BOM
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
