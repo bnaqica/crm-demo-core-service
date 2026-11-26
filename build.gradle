@@ -38,7 +38,7 @@ dependencies {
     // 3.x is the line built on Jackson 3.
     implementation 'com.networknt:json-schema-validator:3.0.1'
     // springdoc isn't in Spring Boot's BOM
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
     implementation 'org.flywaydb:flyway-database-postgresql'
